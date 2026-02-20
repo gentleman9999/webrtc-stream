@@ -7,6 +7,10 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+app.get("/", (req, res) => {
+  res.redirect("/publisher?stream=sports01");
+});
+
 app.use("/publisher", express.static(path.join(__dirname, "publisher")));
 app.use("/viewer", express.static(path.join(__dirname, "viewer")));
 

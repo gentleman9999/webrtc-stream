@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'PublisherApp',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
+    url: 'https://webrtc-stream-cfvj.onrender.com',
+    cleartext: false
   }
 };
 
