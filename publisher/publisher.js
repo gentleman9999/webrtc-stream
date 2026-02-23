@@ -12,7 +12,7 @@ let localStream;
 async function start() {
   localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: true
+    audio: false
   });
 
   document.getElementById("localVideo").srcObject = localStream;
