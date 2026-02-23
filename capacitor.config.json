@@ -1,5 +1,9 @@
 {
   "appId": "com.adam.publisher",
   "appName": "PublisherApp",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "url": "https://webrtc-stream-cfvj.onrender.com",
+    "cleartext": false
+  }
 }

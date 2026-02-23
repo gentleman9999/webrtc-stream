@@ -1,5 +1,7 @@
 const socket = io();
 const roomId = "12345";
+console.log("isSecureContext:", window.isSecureContext);
+console.log("mediaDevices:", navigator.mediaDevices);
 
 const pc = new RTCPeerConnection({
   iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
