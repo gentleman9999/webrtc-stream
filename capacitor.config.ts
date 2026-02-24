@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'PublisherApp',
   webDir: 'www',
   server: {
-    url: 'https://webrtc-stream-cfvj.onrender.com',
+    url: 'https://webrtc-stream-cfvj.onrender.com/viewer?stream=sports01',
     cleartext: false
   }
 };

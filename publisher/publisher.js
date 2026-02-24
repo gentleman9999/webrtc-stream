@@ -1,5 +1,6 @@
 const socket = io();
 const roomId = "12345";
+
 console.log("isSecureContext:", window.isSecureContext);
 console.log("mediaDevices:", navigator.mediaDevices);
 
@@ -7,20 +8,46 @@ const pc = new RTCPeerConnection({
   iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
 });
 
-let localStream;
+let localStream = null;
+let currentFacingMode = "environment"; // default back camera
 
-async function start() {
-  localStream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: false
-  });
+async function startCamera() {
+  try {
+    // Stop previous stream if exists
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
+    }
 
-  document.getElementById("localVideo").srcObject = localStream;
+    const constraints = {
+      video: {
+        facingMode: currentFacingMode
+      },
+      audio: false
+    };
 
-  localStream.getTracks().forEach(track => {
-    pc.addTrack(track, localStream);
-  });
+    localStream = await navigator.mediaDevices.getUserMedia(constraints);
 
+    const videoElement = document.getElementById("localVideo");
+    videoElement.srcObject = localStream;
+
+    // Remove old senders
+    pc.getSenders().forEach(sender => {
+      pc.removeTrack(sender);
+    });
+
+    // Add new tracks
+    localStream.getTracks().forEach(track => {
+      pc.addTrack(track, localStream);
+    });
+
+  } catch (err) {
+    console.error("Camera error:", err);
+    alert("Camera error: " + err.message);
+  }
+}
+
+async function init() {
+  await startCamera();
   socket.emit("join-room", { roomId, role: "publisher" });
 }
 
@@ -47,4 +74,12 @@ pc.onicecandidate = (event) => {
   }
 };
 
-start();
+// 🔥 Camera Switch Function
+document.getElementById("switchCam")?.addEventListener("click", async () => {
+  currentFacingMode =
+    currentFacingMode === "environment" ? "user" : "environment";
+
+  await startCamera();
+});
+
+init();
