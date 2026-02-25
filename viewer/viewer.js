@@ -23,14 +23,20 @@ socket.on("ice-candidate", async (candidate) => {
 });
 
 pc.ontrack = (event) => {
-    console.log("Received stream");
-  
-    const video = document.getElementById("remoteVideo");
-    video.srcObject = event.streams[0];
-  
-    video.play().catch(err => {
-      console.log("Autoplay blocked:", err);
+  const video = document.getElementById("remoteVideo");
+
+  video.srcObject = event.streams[0];
+
+  video.muted = true;      // VERY IMPORTANT
+  video.playsInline = true;
+
+  const playPromise = video.play();
+
+  if (playPromise !== undefined) {
+    playPromise.catch(error => {
+      console.log("Autoplay prevented:", error);
     });
+  }
 };
 
 pc.onicecandidate = (event) => {
