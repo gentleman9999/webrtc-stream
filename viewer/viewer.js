@@ -56,3 +56,7 @@ pc.onicecandidate = (event) => {
     socket.emit("ice-candidate", { roomId, candidate: event.candidate });
   }
 };
+
+pc.oniceconnectionstatechange = () => {
+  console.log("ICE state:", pc.iceConnectionState);
+};

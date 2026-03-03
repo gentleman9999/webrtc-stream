@@ -86,6 +86,10 @@ pc.onicecandidate = (event) => {
   }
 };
 
+pc.oniceconnectionstatechange = () => {
+  console.log("ICE state:", pc.iceConnectionState);
+};
+
 // 🔥 Camera Switch Function
 document.getElementById("switchCam")?.addEventListener("click", async () => {
   currentFacingMode =
