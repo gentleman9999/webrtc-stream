@@ -25,18 +25,33 @@ async function startCamera() {
   try {
     const constraints = {
       video: { facingMode: { ideal: currentFacingMode } },
-      audio: false
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      }
     };
 
     const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+
     const newVideoTrack = newStream.getVideoTracks()[0];
+    const newAudioTrack = newStream.getAudioTracks()[0];
 
-    const sender = pc.getSenders().find(s => s.track && s.track.kind === "video");
+    const videoSender = pc.getSenders().find(s => s.track && s.track.kind === "video");
+    const audioSender = pc.getSenders().find(s => s.track && s.track.kind === "audio");
 
-    if (sender) {
-      await sender.replaceTrack(newVideoTrack);
+    if (videoSender) {
+      await videoSender.replaceTrack(newVideoTrack);
     } else {
       pc.addTrack(newVideoTrack, newStream);
+    }
+
+    if (newAudioTrack) {
+      if (audioSender) {
+        await audioSender.replaceTrack(newAudioTrack);
+      } else {
+        pc.addTrack(newAudioTrack, newStream);
+      }
     }
 
     if (currentStream) {
@@ -44,11 +59,10 @@ async function startCamera() {
     }
 
     currentStream = newStream;
-
     document.getElementById("localVideo").srcObject = currentStream;
 
   } catch (err) {
-    console.error("Camera switch error:", err);
+    console.error("Camera/Mic error:", err);
   }
 }
 

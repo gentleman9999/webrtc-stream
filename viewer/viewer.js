@@ -36,17 +36,14 @@ pc.ontrack = (event) => {
   const video = document.getElementById("remoteVideo");
 
   video.srcObject = event.streams[0];
-
-  video.muted = true;      // VERY IMPORTANT
   video.playsInline = true;
 
-  const playPromise = video.play();
+  // DO NOT mute now
+  video.muted = false;
 
-  if (playPromise !== undefined) {
-    playPromise.catch(error => {
-      console.log("Autoplay prevented:", error);
-    });
-  }
+  video.play().catch(err => {
+    console.log("Autoplay prevented:", err);
+  });
 };
 
 pc.onicecandidate = (event) => {
@@ -57,4 +54,18 @@ pc.onicecandidate = (event) => {
 
 pc.oniceconnectionstatechange = () => {
   console.log("ICE state:", pc.iceConnectionState);
+};
+
+pc.ontrack = (event) => {
+  const video = document.getElementById("remoteVideo");
+
+  video.srcObject = event.streams[0];
+  video.playsInline = true;
+
+  // DO NOT mute now
+  video.muted = false;
+
+  video.play().catch(err => {
+    console.log("Autoplay prevented:", err);
+  });
 };
