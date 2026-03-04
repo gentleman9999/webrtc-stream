@@ -23,36 +23,32 @@ let currentFacingMode = "environment"; // default back camera
 
 async function startCamera() {
   try {
-    // Stop previous stream if exists
-    if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
-    }
-
     const constraints = {
-      video: {
-        facingMode: currentFacingMode
-      },
+      video: { facingMode: { ideal: currentFacingMode } },
       audio: false
     };
 
-    localStream = await navigator.mediaDevices.getUserMedia(constraints);
+    const newStream = await navigator.mediaDevices.getUserMedia(constraints);
+    const newVideoTrack = newStream.getVideoTracks()[0];
 
-    const videoElement = document.getElementById("localVideo");
-    videoElement.srcObject = localStream;
+    const sender = pc.getSenders().find(s => s.track && s.track.kind === "video");
 
-    // Remove old senders
-    pc.getSenders().forEach(sender => {
-      pc.removeTrack(sender);
-    });
+    if (sender) {
+      await sender.replaceTrack(newVideoTrack);
+    } else {
+      pc.addTrack(newVideoTrack, newStream);
+    }
 
-    // Add new tracks
-    localStream.getTracks().forEach(track => {
-      pc.addTrack(track, localStream);
-    });
+    if (currentStream) {
+      currentStream.getTracks().forEach(track => track.stop());
+    }
+
+    currentStream = newStream;
+
+    document.getElementById("localVideo").srcObject = currentStream;
 
   } catch (err) {
-    console.error("Camera error:", err);
-    alert("Camera error: " + err.message);
+    console.error("Camera switch error:", err);
   }
 }
 
