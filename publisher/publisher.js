@@ -1,6 +1,9 @@
 const socket = io();
 const roomId = "12345";
 
+let currentStream = null;
+let currentFacingMode = "environment"; // default back camera
+
 console.log("isSecureContext:", window.isSecureContext);
 console.log("mediaDevices:", navigator.mediaDevices);
 
@@ -17,9 +20,6 @@ const pc = new RTCPeerConnection({
     }
   ]
 });
-
-let localStream = null;
-let currentFacingMode = "environment"; // default back camera
 
 async function startCamera() {
   try {
