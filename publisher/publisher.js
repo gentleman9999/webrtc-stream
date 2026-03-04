@@ -8,10 +8,12 @@ const pc = new RTCPeerConnection({
   iceServers: [
     {
       urls: [
-        "turn:openrelay.metered.ca:443?transport=tcp"
+        "turn:107.150.62.234:3478?transport=udp",
+        "turn:107.150.62.234:3478?transport=tcp",
+        "turn:107.150.62.234:443?transport=tcp"
       ],
-      username: "openrelayproject",
-      credential: "openrelayproject"
+      username: "demo",
+      credential: "strongpassword123"
     }
   ]
 });
